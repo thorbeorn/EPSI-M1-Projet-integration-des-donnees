@@ -1,0 +1,61 @@
+# -------------------------
+# 🔧 Configuration générale
+# -------------------------
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# -------------------------
+# 🐳 Docker & MongoDB
+# -------------------------
+# Volumes et données persistantes
+mongo_data/
+db-dump/
+data/
+dump/
+*.bson
+*.gz
+*.archive
+
+# Conteneurs et images
+**/tmp/
+**/.docker/
+
+
+# -------------------------
+# 🧱 Spark / Java
+# -------------------------
+# Build outputs
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+
+# Maven / Gradle
+.mvn/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+*.log
+*.lock
+
+# -------------------------
+# ⚙️ Scripts & configs locaux
+# -------------------------
+.env
+*.sh~
+*.local
+*.secret
+/.metadata/
