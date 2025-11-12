@@ -1,10 +1,13 @@
-version: "3.1"
-  
+volumes:
+  mongo_data: {}
+
 services:
   mongo:
     image: mongo:bionic
+    container_name: mongodb
+    restart: always
     ports:
       - "27017:27017"
     volumes:
-      - ${PWD}/mongorestore.sh:/docker-entrypoint-initdb.d/mongorestore.sh
-      - ${PWD}/db-dump:/db-dump
+      - mongo_data:/data/db
+      - ${PWD}/openfoodfacts-mongodbdump.gz:/openfoodfacts-mongodbdump.gz

@@ -1,0 +1,33 @@
+# -------------------------
+# 🔧 Configuration générale
+# -------------------------
+# OS / IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.iml
+*.swp
+
+# Logs et fichiers temporaires
+*.log
+*.tmp
+*.bak
+*.swp
+*.swo
+
+# -------------------------
+# 🐳 Docker & MongoDB
+# -------------------------
+# Volumes et données persistantes
+mongo_data/
+db-dump/
+data/
+dump/
+*.bson
+*.gz
+*.archive
+
+# Conteneurs et images
+**/tmp/
+**/.docker/
