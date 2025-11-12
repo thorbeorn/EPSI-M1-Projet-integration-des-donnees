@@ -1,0 +1,1 @@
+mongorestore -d openfoodfacts /db-dump
