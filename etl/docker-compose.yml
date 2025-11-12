@@ -1,6 +1,7 @@
 volumes:
   spark_events: {}
-  mongo_data: {}
+  elt_mongo_data:
+    external: true
 
 services:
   mongo:
@@ -10,7 +11,7 @@ services:
     ports:
       - "27017:27017"
     volumes:
-      - mongo_data:/data/db
+      - elt_mongo_data:/data/db
       - ${PWD}/openfoodfacts-mongodbdump.gz:/openfoodfacts-mongodbdump.gz
 
   mongo-express:

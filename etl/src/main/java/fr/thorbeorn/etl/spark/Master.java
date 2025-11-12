@@ -3,6 +3,8 @@ package fr.thorbeorn.etl.spark;
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
+import org.apache.spark.sql.types.DataTypes;
+import org.apache.spark.sql.types.StructType;
 
 public class Master {
 
@@ -43,8 +45,14 @@ public class Master {
 						.master(MasterName)
 						.config("spark.mongodb.read.connection.uri", MongoURI)
 						.getOrCreate();
+	        	StructType schema = new StructType()
+	                    .add("_id", DataTypes.StringType)
+	                    .add("name", DataTypes.StringType)
+	                    .add("age", DataTypes.IntegerType)
+	                    .add("attributes", DataTypes.createMapType(DataTypes.StringType, DataTypes.StringType));
 	            dt = sp.read()
 	                   .format("mongodb")
+	                   .schema(schema)
 	                   .load();
 	            break;
 	        default:
