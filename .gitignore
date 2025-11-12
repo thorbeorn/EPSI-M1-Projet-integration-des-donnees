@@ -58,3 +58,4 @@ out/
 *.sh~
 *.local
 *.secret
+/.metadata/
