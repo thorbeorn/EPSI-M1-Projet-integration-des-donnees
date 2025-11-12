@@ -31,3 +31,30 @@ dump/
 # Conteneurs et images
 **/tmp/
 **/.docker/
+
+
+# -------------------------
+# 🧱 Spark / Java
+# -------------------------
+# Build outputs
+target/
+build/
+out/
+*.class
+*.jar
+*.war
+
+# Maven / Gradle
+.mvn/
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+*.log
+*.lock
+
+# -------------------------
+# ⚙️ Scripts & configs locaux
+# -------------------------
+.env
+*.sh~
+*.local
+*.secret
