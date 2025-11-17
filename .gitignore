@@ -60,4 +60,4 @@ out/
 *.secret
 /.metadata/
 *.pdf
-*.csv
+en.openfoodfacts.org.products.csv
