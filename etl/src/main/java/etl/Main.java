@@ -11,7 +11,11 @@ public class Main {
 		SparkSession sparkSession = Utils.initializeSparkSession("openfoodfacts-etl");
 		
 		Dataset<Row> dfProducts = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_PRODUCTS, "\t");
+		Dataset<Row> dfDiets = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_DIET, ",");
+		Dataset<Row> dfUsers = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_DIET, ",");
 		
-		Dataset<Row> dfProductsCleaned = Transformers.cleanData(dfProducts, sparkSession);
+		Dataset<Row> dfProductsCleaned = Transformers.cleanProductData(dfProducts, sparkSession);
+		Dataset<Row> dfDietsCleaned = Transformers.cleanDietData(dfDiets, sparkSession);
+		Dataset<Row> dfUsersCleaned = Transformers.cleanUserData(dfUsers, sparkSession);
 	}
 }

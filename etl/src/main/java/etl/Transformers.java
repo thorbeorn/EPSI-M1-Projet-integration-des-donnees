@@ -1,6 +1,8 @@
 package etl;
 
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
@@ -54,30 +56,51 @@ public class Transformers {
         );
     }
 	private static Dataset<Row> cleanCountryNames(Dataset<Row> dfSelectedColumns, SparkSession sparkSession) {
-        Dataset<String> listCountry = Utils.splitColumnIntoWords(dfSelectedColumns, "sold_countries", "country", ",");
-        Dataset<Row> dfCountries = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_COUNTRIES, ",", new String[] {
-        	    "index",
-        	    "country_id",
-        	    "country_code_2",
-        	    "country_code_3",
-        	    "country_fr",
-        	    "country_en"
-        	});
-        Dataset<Row> dfMergedData = listCountry.join(dfCountries, listCountry.col("country").equalTo(dfCountries.col("country_en")), "left_outer");
-        Dataset<Row> dfFalseCountry = dfMergedData.filter(dfMergedData.col("country_en").isNull()).select("country");
-        List<String> falseCountryList = dfFalseCountry.as(Encoders.STRING()).collectAsList();
-        Dataset<Row> dfCleaned = dfSelectedColumns.withColumn("cleaned_sold_countries",
-                expr("concat_ws(',', filter(split(sold_countries, ','), country -> !array_contains(array('" + String.join("','", falseCountryList) + "'), country)))"));
-        dfCleaned = dfCleaned.withColumn("cleaned_sold_countries",
-                when(dfCleaned.col("cleaned_sold_countries").equalTo(""), null)
-                        .otherwise(dfCleaned.col("cleaned_sold_countries")));
-        dfCleaned = dfCleaned.na().drop(new String[]{"cleaned_sold_countries"});
-        dfCleaned = dfCleaned.drop("sold_countries");
-        dfCleaned = dfCleaned.withColumnRenamed("cleaned_sold_countries", "sold_countries");
-        return dfCleaned;
-    }
+	    Dataset<String> listCountry = Utils.splitColumnIntoWords(dfSelectedColumns, "sold_countries", "country", ",");
+	    Dataset<Row> dfCountries = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_COUNTRIES, ",", new String[] {
+	        "index",
+	        "country_id",
+	        "country_code_2",
+	        "country_code_3",
+	        "country_fr",
+	        "country_en"
+	    });
+	    Dataset<Row> dfMergedData = listCountry.join(dfCountries, listCountry.col("country").equalTo(dfCountries.col("country_en")), "left_outer");
+	    Dataset<Row> dfFalseCountry = dfMergedData.filter(dfMergedData.col("country_en").isNull()).select("country");
+	    List<String> falseCountryList = dfFalseCountry.as(Encoders.STRING()).collectAsList();
+	    Map<String, String> countryMap = dfCountries.select("country_en", "country_fr")
+	        .as(Encoders.tuple(Encoders.STRING(), Encoders.STRING()))
+	        .collectAsList()
+	        .stream()
+	        .collect(Collectors.toMap(t -> t._1(), t -> t._2()));
+	    
+	    Dataset<Row> dfCleaned = dfSelectedColumns;
+	    dfCleaned = dfCleaned.withColumn("sold_countries_en",
+	        expr("concat_ws(',', filter(split(sold_countries, ','), country -> !array_contains(array('" + 
+	            String.join("','", falseCountryList) + "'), country)))"));
+	    dfCleaned = dfCleaned.withColumn("sold_countries_fr",
+	        expr("concat_ws(',', transform(filter(split(sold_countries, ','), country -> !array_contains(array('" + 
+	            String.join("','", falseCountryList) + "'), country)), country -> " +
+	            "CASE " + 
+	            countryMap.entrySet().stream()
+	                .map(e -> "WHEN country = '" + e.getKey() + "' THEN '" + e.getValue() + "'")
+	                .collect(Collectors.joining(" ")) + 
+	            " END))"));
+	    dfCleaned = dfCleaned.withColumn("sold_countries_en",
+	        when(dfCleaned.col("sold_countries_en").equalTo(""), null)
+	            .otherwise(dfCleaned.col("sold_countries_en")));
+	    
+	    dfCleaned = dfCleaned.withColumn("sold_countries_fr",
+	        when(dfCleaned.col("sold_countries_fr").equalTo(""), null)
+	            .otherwise(dfCleaned.col("sold_countries_fr")));
+	    
+	    dfCleaned = dfCleaned.na().drop(new String[]{"sold_countries_en", "sold_countries_fr"});
+	    dfCleaned = dfCleaned.drop("sold_countries");
+	    
+	    return dfCleaned;
+	}
 	
-	public static Dataset<Row> cleanData(Dataset<Row> dfProducts, SparkSession sparkSession) {
+	public static Dataset<Row> cleanProductData(Dataset<Row> dfProducts, SparkSession sparkSession) {
 		dfProducts = selectAndCastColumns(dfProducts);
 		dfProducts = removeMissingValues(dfProducts);
 		dfProducts = removeDuplicates(dfProducts);
@@ -101,8 +124,45 @@ public class Transformers {
 		dfProducts = removeOutOfRangeValues(dfProducts, "sucrose_100g", 0, 100);
 		dfProducts = removeOutOfRangeValues(dfProducts, "glucose_100g", 0, 100);
 		dfProducts = removeOutOfRangeValues(dfProducts, "fructose_100g", 0, 100);
+		
 		dfProducts = cleanCountryNames(dfProducts, sparkSession);
 		return dfProducts;
 	}
-
+	public static Dataset<Row> cleanUserData(Dataset<Row> dfUsers, SparkSession sparkSession) {
+		dfUsers = removeMissingValues(dfUsers);
+		dfUsers = removeDuplicates(dfUsers);
+		
+		dfUsers = removeEmptyStrings(dfUsers, "first_name");
+		dfUsers = removeEmptyStrings(dfUsers, "last_name");
+		dfUsers = removeEmptyStrings(dfUsers, "country");
+		
+		dfUsers = removeNonASCIICharacters(dfUsers, "first_name", "^[\\x00-\\x7F]*$");
+		dfUsers = removeNonASCIICharacters(dfUsers, "last_name", "^[\\x00-\\x7F]*$");
+		dfUsers = removeNonASCIICharacters(dfUsers, "country", "^[\\x00-\\x7F]*$");
+		
+		dfUsers = cleanCountryNames(dfUsers, sparkSession);
+		return dfUsers;
+	}
+	public static Dataset<Row> cleanDietData(Dataset<Row> dfDiets, SparkSession sparkSession) {
+		dfDiets = removeMissingValues(dfDiets);
+		dfDiets = removeDuplicates(dfDiets);
+		
+		dfDiets = removeEmptyStrings(dfDiets, "name_en");
+		dfDiets = removeEmptyStrings(dfDiets, "name_fr");
+		dfDiets = removeEmptyStrings(dfDiets, "description_en");
+		dfDiets = removeEmptyStrings(dfDiets, "description_fr");
+		
+		dfDiets = removeNonASCIICharacters(dfDiets, "name_en", "^[\\x00-\\x7F]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "name_fr", "^[\\x00-\\x7F]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "description_en", "^[\\x00-\\x7F]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "description_fr", "^[\\x00-\\x7F]*$");
+		
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_added-sugars_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_sugars_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_sucrose_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_glucose_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_fructose_100g", 0, 100);
+		
+		return dfDiets;
+	}
 }
