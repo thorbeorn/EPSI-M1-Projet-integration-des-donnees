@@ -10,7 +10,7 @@ import org.apache.spark.sql.SparkSession;
 import static org.apache.spark.sql.functions.expr;
 import static org.apache.spark.sql.functions.when;
 
-public class Transformer {
+public class Transformers {
 
 	private static Dataset<Row> selectAndCastColumns(Dataset<Row> df) {
 	    return df.select(
@@ -47,17 +47,20 @@ public class Transformer {
     }
 	private static Dataset<Row> removeOutOfRangeValues(Dataset<Row> df, String columnName, float min, float max) {
         return df.filter(
-                df.col(columnName).leq(100).geq(0)
+        		df.col(columnName).geq(min)
+                .and(df.col(columnName).leq(max))
         );
     }
 	private static Dataset<Row> cleanCountryNames(Dataset<Row> dfSelectedColumns, SparkSession sparkSession) {
         Dataset<String> listCountry = Utils.splitColumnIntoWords(dfSelectedColumns, "sold_countries", "country", ",");
-        Dataset<Row> dfCountries = sparkSession.read()
-                .format("csv")
-                .option("header", false)
-                .option("delimiter", ",")
-                .load(Paths.DATA_FILE_COUNTRIES)
-                .toDF("index", "country_id", "country_code_2", "country_code_3", "country_fr", "country_en");
+        Dataset<Row> dfCountries = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_COUNTRIES, ",", new String[] {
+        	    "index",
+        	    "country_id",
+        	    "country_code_2",
+        	    "country_code_3",
+        	    "country_fr",
+        	    "country_en"
+        	});
         Dataset<Row> dfMergedData = listCountry.join(dfCountries, listCountry.col("country").equalTo(dfCountries.col("country_en")), "left_outer");
         Dataset<Row> dfFalseCountry = dfMergedData.filter(dfMergedData.col("country_en").isNull()).select("country");
         List<String> falseCountryList = dfFalseCountry.as(Encoders.STRING()).collectAsList();

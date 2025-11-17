@@ -15,6 +15,15 @@ public class Extractors {
                 .option("inferSchema", true)
                 .load(filePath);
 	}
+	public static Dataset<Row> extractFromCSV(SparkSession sparkSession, String filePath, String delimiter, String[] header) 
+	{
+		return sparkSession.read()
+                .format("csv")
+                .option("header", false)
+                .option("delimiter", delimiter)
+                .load(filePath)
+                .toDF(header);
+	}
 	
 	public static Dataset<Row> extractFromJSON(SparkSession sparkSession, String filePath) 
 	{
