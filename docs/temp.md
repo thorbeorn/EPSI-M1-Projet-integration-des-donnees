@@ -5,11 +5,18 @@
 docker exec -it spark-master /bin/bash
 ```
 ```bash
-/spark/bin/spark-submit \
-  --class fr.thorbeorn.etl.Main \
-  --master spark://spark-master:7077 \
-  --deploy-mode client \
-  /tmp/etl.jar
+cd /app
+sh /spark/bin/spark-submit \
+/app/etl.jar
 ```
 
 ### - cluster
+```bash
+docker exec -it spark-master /bin/bash
+```
+```bash
+cd /app
+sh /spark/bin/spark-submit \
+--master spark://spark-master:7077 \
+/app/etl.jar
+```

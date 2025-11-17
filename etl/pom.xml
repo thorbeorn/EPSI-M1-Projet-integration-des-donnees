@@ -48,7 +48,7 @@
           </descriptorRefs>
           <archive>
             <manifest>
-              <mainClass>fr.thorbeorn.etl.Main</mainClass>
+              <mainClass>etl.Main</mainClass>
             </manifest>
           </archive>
         </configuration>

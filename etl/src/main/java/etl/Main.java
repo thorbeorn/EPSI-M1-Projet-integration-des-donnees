@@ -8,9 +8,9 @@ public class Main {
 
 	public static void main(String[] args) 
 	{
-		SparkSession sparkSession = Utils.initializeSparkSession("openfoodfacts-etl", "local[4]");
+		SparkSession sparkSession = Utils.initializeSparkSession("openfoodfacts-etl");
 		
-		Dataset<Row> dfProducts = Extractor.extractFromCSV(sparkSession, Constants.DATA_FILE_PRODUCTS, "\t");
+		Dataset<Row> dfProducts = Extractors.extractFromCSV(sparkSession, Paths.DATA_FILE_PRODUCTS, "\t");
 		
 		Dataset<Row> dfProductsCleaned = Transformer.cleanData(dfProducts, sparkSession);
 	}

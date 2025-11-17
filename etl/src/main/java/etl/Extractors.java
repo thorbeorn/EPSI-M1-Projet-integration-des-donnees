@@ -4,7 +4,7 @@ import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Row;
 import org.apache.spark.sql.SparkSession;
 
-public class Extractor {
+public class Extractors {
 	
 	public static Dataset<Row> extractFromCSV(SparkSession sparkSession, String filePath, String delimiter) 
 	{

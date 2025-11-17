@@ -56,7 +56,7 @@ public class Transformer {
                 .format("csv")
                 .option("header", false)
                 .option("delimiter", ",")
-                .load(Constants.DATA_FILE_COUNTRIES)
+                .load(Paths.DATA_FILE_COUNTRIES)
                 .toDF("index", "country_id", "country_code_2", "country_code_3", "country_fr", "country_en");
         Dataset<Row> dfMergedData = listCountry.join(dfCountries, listCountry.col("country").equalTo(dfCountries.col("country_en")), "left_outer");
         Dataset<Row> dfFalseCountry = dfMergedData.filter(dfMergedData.col("country_en").isNull()).select("country");

@@ -9,11 +9,17 @@ import static org.apache.spark.sql.functions.*;
 
 public class Utils {
 	
-	public static SparkSession initializeSparkSession(String appname, String master) 
+	public static SparkSession initializeSparkSession(String appname) 
 	{
+		String master = System.getProperty("spark.master", "local[4]");
+	    String driverMemory = System.getProperty("spark.driver.memory", "2g");
+	    String executorMemory = System.getProperty("spark.executor.memory", "2g");
+	    
         return SparkSession.builder()
                 .appName(appname)
                 .master(master)
+                .config("spark.driver.memory", driverMemory)
+                .config("spark.executor.memory", executorMemory)
                 .getOrCreate();
     }
 	public static Dataset<String> splitColumnIntoWords(Dataset<Row> df, String columnNameInput, String columnNameOutput ,String delimiter) {
