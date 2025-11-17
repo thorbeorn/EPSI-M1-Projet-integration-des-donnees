@@ -1,30 +1,7 @@
 volumes:
   spark_events: {}
-  elt_mongo_data:
-    external: true
 
 services:
-  mongo:
-    image: mongo:bionic
-    container_name: mongo
-    restart: always
-    ports:
-      - "27017:27017"
-    volumes:
-      - elt_mongo_data:/data/db
-      - ${PWD}/openfoodfacts-mongodbdump.gz:/openfoodfacts-mongodbdump.gz
-
-  mongo-express:
-    image: mongo-express:latest
-    container_name: mongo-express
-    restart: always
-    ports:
-      - "8081:8081"
-    environment:
-      ME_CONFIG_MONGODB_ADMINUSERNAME: ""
-      ME_CONFIG_MONGODB_ADMINPASSWORD: ""
-      ME_CONFIG_MONGODB_SERVER: mongo
-  
   spark-master:
     image: ruizhizhong058/spark-master:3.5.1-hadoop3.3.6
     container_name: spark-master

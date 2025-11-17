@@ -1,26 +1,30 @@
 1. modify docker-compose
 add 
 ```yml
-    mongo:
-        image: mongo:bionic
-        container_name: mongo
-        restart: always
-        ports:
-        - "27017:27017"
-        volumes:
-        - elt_mongo_data:/data/db
-        - ${PWD}/openfoodfacts-mongodbdump.gz:/openfoodfacts-mongodbdump.gz
+volumes:
+  elt_mongo_data: {}
 
-    mongo-express:
-        image: mongo-express:latest
-        container_name: mongo-express
-        restart: always
-        ports:
-        - "8081:8081"
-        environment:
-        ME_CONFIG_MONGODB_ADMINUSERNAME: ""
-        ME_CONFIG_MONGODB_ADMINPASSWORD: ""
-        ME_CONFIG_MONGODB_SERVER: mongo
+services:
+  mongo:
+    image: mongo:bionic
+    container_name: mongo
+    restart: always
+    ports:
+    - "27017:27017"
+    volumes:
+    - elt_mongo_data:/data/db
+    - ${PWD}/openfoodfacts-mongodbdump.gz:/openfoodfacts-mongodbdump.gz
+
+  mongo-express:
+    image: mongo-express:latest
+    container_name: mongo-express
+    restart: always
+    ports:
+    - "8081:8081"
+    environment:
+    ME_CONFIG_MONGODB_ADMINUSERNAME: ""
+    ME_CONFIG_MONGODB_ADMINPASSWORD: ""
+    ME_CONFIG_MONGODB_SERVER: mongo
 ```
 
 2. lunch docker compose
