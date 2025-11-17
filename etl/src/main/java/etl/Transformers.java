@@ -19,7 +19,9 @@ public class Transformers {
 	                    df.col("countries_en").cast("string"),
 	                    df.col("added-sugars_100g").cast("float"),
 	                    df.col("sugars_100g").cast("float"),
-	                    df.col("lactose_100g").cast("float")
+	                    df.col("sucrose_100g").cast("float"),
+	                    df.col("glucose_100g").cast("float"),
+	                    df.col("fructose_100g").cast("float")
 	            ).withColumnRenamed("countries_en", "sold_countries")
 	            .withColumnRenamed("categories_en", "categories");
 	}
@@ -82,7 +84,9 @@ public class Transformers {
 		
 		dfProducts = removeNegativeValues(dfProducts, "added-sugars_100g");
 		dfProducts = removeNegativeValues(dfProducts, "sugars_100g");
-		dfProducts = removeNegativeValues(dfProducts, "lactose_100g");
+		dfProducts = removeNegativeValues(dfProducts, "sucrose_100g");
+		dfProducts = removeNegativeValues(dfProducts, "glucose_100g");
+		dfProducts = removeNegativeValues(dfProducts, "fructose_100g");
 		
 		dfProducts = removeEmptyStrings(dfProducts, "product_name");
 		dfProducts = removeEmptyStrings(dfProducts, "categories");
@@ -94,7 +98,9 @@ public class Transformers {
 		
 		dfProducts = removeOutOfRangeValues(dfProducts, "added-sugars_100g", 0, 100);
 		dfProducts = removeOutOfRangeValues(dfProducts, "sugars_100g", 0, 100);
-		dfProducts = removeOutOfRangeValues(dfProducts, "lactose_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "sucrose_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "glucose_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "fructose_100g", 0, 100);
 		dfProducts = cleanCountryNames(dfProducts, sparkSession);
 		return dfProducts;
 	}
