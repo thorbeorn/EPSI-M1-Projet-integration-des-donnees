@@ -10,6 +10,8 @@ public class Main {
 	{
 		SparkSession sparkSession = Utils.initializeSparkSession("openfoodfacts-etl", "local[4]");
 		
-		Dataset<Row> test;
+		Dataset<Row> dfProducts = Extractor.extractFromCSV(sparkSession, Constants.DATA_FILE_PRODUCTS, "\t");
+		
+		Dataset<Row> dfProductsCleaned = Transformer.cleanData(dfProducts, sparkSession);
 	}
 }
