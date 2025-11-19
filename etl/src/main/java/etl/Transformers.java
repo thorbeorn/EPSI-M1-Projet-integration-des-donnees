@@ -139,8 +139,6 @@ public class Transformers {
 		dfUsers = removeNonASCIICharacters(dfUsers, "first_name", "^[\\x00-\\x7F]*$");
 		dfUsers = removeNonASCIICharacters(dfUsers, "last_name", "^[\\x00-\\x7F]*$");
 		dfUsers = removeNonASCIICharacters(dfUsers, "country", "^[\\x00-\\x7F]*$");
-		
-		dfUsers = cleanCountryNames(dfUsers, sparkSession);
 		return dfUsers;
 	}
 	public static Dataset<Row> cleanDietData(Dataset<Row> dfDiets, SparkSession sparkSession) {
@@ -162,7 +160,6 @@ public class Transformers {
 		dfDiets = removeOutOfRangeValues(dfDiets, "max_sucrose_100g", 0, 100);
 		dfDiets = removeOutOfRangeValues(dfDiets, "max_glucose_100g", 0, 100);
 		dfDiets = removeOutOfRangeValues(dfDiets, "max_fructose_100g", 0, 100);
-		
 		return dfDiets;
 	}
 }
