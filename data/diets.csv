@@ -1,0 +1,7 @@
+regime_id,name_en,name_fr,description_en,description_fr,max_added-sugars_100g,max_sugars_100g,max_sucrose_100g,max_glucose_100g,max_fructose_100g
+1,Low Added Sugar,Faible sucre ajouté,Diet low in added sugars.,Régime faible en sucres ajoutés.,5,10,3,4,4
+2,Low Sugar,Faible sucre,Diet reducing all sugar types.,Régime réduisant tous les types de sucres.,10,20,8,7,7
+3,No Sucrose,Sans saccharose,Diet avoiding sucrose.,Régime évitant le saccharose.,15,15,0,10,10
+4,Low Glucose,Faible glucose,Diet low in glucose.,Régime faible en glucose.,20,25,10,5,12
+5,Low Fructose,Faible fructose,Diet low in fructose.,Régime faible en fructose.,18,22,9,8,3
+6,Balanced Sugars,Sucres équilibrés,Balanced diet with controlled sugars.,Régime équilibré avec sucres contrôlés.,25,30,12,10,10

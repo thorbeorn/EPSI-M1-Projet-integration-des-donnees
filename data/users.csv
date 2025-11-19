@@ -1,0 +1,7 @@
+user_id,first_name,last_name,age,gender,weight,country,regime_id
+1,Alice,Martin,54,F,86,Spain,1
+2,Bob,Dupont,50,F,68,Morocco,2
+3,Carla,Lambert,57,F,114,France,3
+4,David,Moreau,26,M,111,Morocco,4
+5,Emma,Bernard,67,M,113,Germany,5
+6,Farid,Nguyen,40,F,55,Belgium,6
