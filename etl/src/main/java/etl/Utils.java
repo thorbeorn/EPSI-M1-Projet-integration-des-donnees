@@ -28,4 +28,7 @@ public class Utils {
         Dataset<String> listWords = uniqueWords.select(columnNameOutput).as(Encoders.STRING());
         return listWords;
     }
+	public static String escape(String s) {
+	    return s.replace("'", "\\'");
+	}
 }

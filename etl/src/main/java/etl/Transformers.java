@@ -75,17 +75,41 @@ public class Transformers {
 	        .collect(Collectors.toMap(t -> t._1(), t -> t._2()));
 	    
 	    Dataset<Row> dfCleaned = dfSelectedColumns;
-	    dfCleaned = dfCleaned.withColumn("sold_countries_en",
-	        expr("concat_ws(',', filter(split(sold_countries, ','), country -> !array_contains(array('" + 
-	            String.join("','", falseCountryList) + "'), country)))"));
-	    dfCleaned = dfCleaned.withColumn("sold_countries_fr",
-	        expr("concat_ws(',', transform(filter(split(sold_countries, ','), country -> !array_contains(array('" + 
-	            String.join("','", falseCountryList) + "'), country)), country -> " +
-	            "CASE " + 
-	            countryMap.entrySet().stream()
-	                .map(e -> "WHEN country = '" + e.getKey() + "' THEN '" + e.getValue() + "'")
-	                .collect(Collectors.joining(" ")) + 
-	            " END))"));
+	    dfCleaned = dfCleaned.withColumn(
+	    	    "sold_countries_en",
+	    	    expr(
+	    	        "concat_ws(',', " +
+	    	            "filter(split(sold_countries, ','), country -> " +
+	    	                "!array_contains(array('" +
+	    	                    String.join("','", falseCountryList.stream().map(Utils::escape).toList()) +
+	    	                "'), country)" +
+	    	            ")" +
+	    	        ")"
+	    	    )
+	    	);
+
+	    	// FR version
+	    	dfCleaned = dfCleaned.withColumn(
+	    	    "sold_countries_fr",
+	    	    expr(
+	    	        "concat_ws(',', transform(" +
+	    	            "filter(split(sold_countries, ','), country -> " +
+	    	                "!array_contains(array('" +
+	    	                    String.join("','", falseCountryList.stream().map(Utils::escape).toList()) +
+	    	                "'), country)" +
+	    	            "), country -> CASE " +
+	    	                countryMap.entrySet().stream()
+	    	                    .map(e ->
+	    	                        "WHEN country = '" +
+	    	                        Utils.escape(e.getKey()) +
+	    	                        "' THEN '" +
+	    	                        Utils.escape(e.getValue()) +
+	    	                        "'"
+	    	                    )
+	    	                    .collect(Collectors.joining(" ")) +
+	    	            " END))"
+	    	    )
+	    	);
 	    dfCleaned = dfCleaned.withColumn("sold_countries_en",
 	        when(dfCleaned.col("sold_countries_en").equalTo(""), null)
 	            .otherwise(dfCleaned.col("sold_countries_en")));

@@ -18,6 +18,6 @@ public class Main {
 		Dataset<Row> dfDietsCleaned = Transformers.cleanDietData(dfDiets, sparkSession);
 		Dataset<Row> dfUsersCleaned = Transformers.cleanUserData(dfUsers, sparkSession);
 		
-		Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
+		//Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
 	}
 }

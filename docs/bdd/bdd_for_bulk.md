@@ -1,3 +1,5 @@
+# Ce document est la pour initier l'instance docker de bulk en cas d'utilisation des données depuis le dump mongoDB
+
 1. modify docker-compose
 add 
 ```yml
