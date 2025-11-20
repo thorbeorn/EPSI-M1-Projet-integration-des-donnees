@@ -81,7 +81,7 @@ services:
     restart: unless-stopped
     volumes:
         - openfoodfacts-etl-mysql-data:/var/lib/mysql
-        - ${PWD}/../docs/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+        - ${PWD}/../sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     ports:
