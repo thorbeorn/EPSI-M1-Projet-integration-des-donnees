@@ -12,12 +12,15 @@ public class Main {
 		
 		Dataset<Row> dfProducts = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_PRODUCTS, "\t");
 		Dataset<Row> dfDiets = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_DIET, ",");
-		Dataset<Row> dfUsers = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_DIET, ",");
+		Dataset<Row> dfUsers = Extractors.extractFromCSV(sparkSession, Constants.DATA_FILE_USERS, ",");
 		
 		Dataset<Row> dfProductsCleaned = Transformers.cleanProductData(dfProducts, sparkSession);
 		Dataset<Row> dfDietsCleaned = Transformers.cleanDietData(dfDiets, sparkSession);
 		Dataset<Row> dfUsersCleaned = Transformers.cleanUserData(dfUsers, sparkSession);
 		
 		//Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
+		
+		sparkSession.stop();
+		System.exit(0);
 	}
 }

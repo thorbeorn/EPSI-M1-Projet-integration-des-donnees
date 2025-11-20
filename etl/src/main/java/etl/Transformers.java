@@ -37,7 +37,7 @@ public class Transformers {
 	}
 	private static Dataset<Row> removeEmptyStrings(Dataset<Row> df, String columnName) {
 	    return df.filter(
-	            df.col("product_name").notEqual("")
+	            df.col(columnName).notEqual("")
 	    );
 	}
 	private static Dataset<Row> removeMissingValues(Dataset<Row> df) {
