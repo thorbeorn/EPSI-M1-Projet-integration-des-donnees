@@ -57,7 +57,18 @@ public class Generators {
             int userRegimeId = userRow.getInt(userRow.fieldIndex("regime_id"));
             String userCountry = userRow.getString(userRow.fieldIndex("country"));
 
-            Row rowUserRegimeInfo = dfDietsCleaned.filter(dfDietsCleaned.col("regime_id").equalTo(userRegimeId)).first();
+            List<Row> regimeList = dfDietsCleaned
+                    .filter(dfDietsCleaned.col("regime_id").equalTo(userRegimeId))
+                    .limit(1)
+                    .collectAsList();
+
+            if (regimeList.isEmpty()) {
+                // handle missing regime
+                continue;
+            }
+
+            Row rowUserRegimeInfo = regimeList.get(0);
+            
             for (int day = 1; day <= 7; day++) {
                 Row dailyMenu = generateDailyMenu(rowUserRegimeInfo, dfProductsCleaned, userCountry, "sold_countries_fr");
                 Row menuRow = RowFactory.create(userId, day, dailyMenu.getAs(0), dailyMenu.getAs(1), dailyMenu.getAs(2));

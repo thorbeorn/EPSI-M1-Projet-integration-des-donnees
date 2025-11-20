@@ -1,0 +1,266 @@
+{
+  "id": "00000000-0000-0000-0000-000000000000",
+  "name": "init.sql",
+  "sources": [
+    {
+      "id": "5f3ff6bc-62fb-4c0b-894d-2a65dac061ab",
+      "name": "init.sql",
+      "kind": {
+        "kind": "SqlLocalFile",
+        "name": "init.sql",
+        "size": 1259,
+        "modified": 1763631782569
+      },
+      "content": [],
+      "tables": [
+        {
+          "schema": "",
+          "table": "daily_menu",
+          "columns": [
+            {
+              "name": "user_id",
+              "type": "int"
+            },
+            {
+              "name": "day",
+              "type": "int"
+            },
+            {
+              "name": "breakfast_product_name",
+              "type": "text"
+            },
+            {
+              "name": "lunch_product_name",
+              "type": "text"
+            },
+            {
+              "name": "dinner_product_name",
+              "type": "text"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "user_id",
+              "day"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "regime",
+          "columns": [
+            {
+              "name": "regime_id",
+              "type": "INT"
+            },
+            {
+              "name": "name_en",
+              "type": "VARCHAR(100)",
+              "nullable": true
+            },
+            {
+              "name": "name_fr",
+              "type": "VARCHAR(100)",
+              "nullable": true
+            },
+            {
+              "name": "description_en",
+              "type": "TEXT",
+              "nullable": true
+            },
+            {
+              "name": "description_fr",
+              "type": "TEXT",
+              "nullable": true
+            },
+            {
+              "name": "max_added_sugars_100g",
+              "type": "INT",
+              "nullable": true
+            },
+            {
+              "name": "max_sugars_100g",
+              "type": "INT",
+              "nullable": true
+            },
+            {
+              "name": "max_sucrose_100g",
+              "type": "INT",
+              "nullable": true
+            },
+            {
+              "name": "max_glucose_100g",
+              "type": "INT",
+              "nullable": true
+            },
+            {
+              "name": "max_fructose_100g",
+              "type": "INT",
+              "nullable": true
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "regime_id"
+            ]
+          }
+        },
+        {
+          "schema": "",
+          "table": "user",
+          "columns": [
+            {
+              "name": "user_id",
+              "type": "int"
+            },
+            {
+              "name": "first_name",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "last_name",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "age",
+              "type": "int",
+              "nullable": true,
+              "default": "NULL"
+            },
+            {
+              "name": "gender",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "weight",
+              "type": "double",
+              "nullable": true,
+              "default": "NULL"
+            },
+            {
+              "name": "country",
+              "type": "text",
+              "nullable": true
+            },
+            {
+              "name": "regime_id",
+              "type": "int",
+              "nullable": true,
+              "default": "NULL"
+            }
+          ],
+          "primaryKey": {
+            "columns": [
+              "user_id"
+            ]
+          }
+        }
+      ],
+      "relations": [
+        {
+          "name": "FK_USER",
+          "src": {
+            "table": ".daily_menu",
+            "column": "user_id"
+          },
+          "ref": {
+            "table": ".user",
+            "column": "user_id"
+          }
+        },
+        {
+          "name": "FK_regime",
+          "src": {
+            "table": ".regime",
+            "column": "regime_id"
+          },
+          "ref": {
+            "table": ".user",
+            "column": "regime_id"
+          }
+        }
+      ],
+      "createdAt": 1763631787118,
+      "updatedAt": 1763631787118
+    }
+  ],
+  "layouts": {
+    "initial layout": {
+      "tables": [
+        {
+          "id": ".daily_menu",
+          "position": {
+            "left": 280,
+            "top": 340
+          },
+          "size": {
+            "width": 261.4296875,
+            "height": 165
+          },
+          "color": "indigo",
+          "columns": [
+            "user_id",
+            "day",
+            "breakfast_product_name",
+            "lunch_product_name",
+            "dinner_product_name"
+          ]
+        },
+        {
+          "id": ".regime",
+          "position": {
+            "left": 1030,
+            "top": 180
+          },
+          "size": {
+            "width": 252.0859375,
+            "height": 285
+          },
+          "color": "pink",
+          "columns": [
+            "regime_id",
+            "name_en",
+            "name_fr",
+            "description_en",
+            "description_fr",
+            "max_added_sugars_100g",
+            "max_sugars_100g",
+            "max_sucrose_100g",
+            "max_glucose_100g",
+            "max_fructose_100g"
+          ]
+        },
+        {
+          "id": ".user",
+          "position": {
+            "left": 740,
+            "top": 250
+          },
+          "size": {
+            "width": 155.4765625,
+            "height": 237
+          },
+          "color": "violet",
+          "columns": [
+            "user_id",
+            "first_name",
+            "last_name",
+            "age",
+            "gender",
+            "weight",
+            "country",
+            "regime_id"
+          ]
+        }
+      ],
+      "createdAt": 1763631787118,
+      "updatedAt": 1763631817117
+    }
+  },
+  "createdAt": 1763631791456,
+  "updatedAt": 1763631791456,
+  "version": 2
+}
