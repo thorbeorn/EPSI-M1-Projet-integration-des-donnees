@@ -14,8 +14,7 @@ public class Loaders {
         .option("user", dbUser)
         .option("password", dbPassword)
         .option("driver", "com.mysql.cj.jdbc.Driver")
-        .mode(SaveMode.Overwrite)
-        .option("truncate", "true")
+        .mode(SaveMode.Append)
         .save();
 	}
 

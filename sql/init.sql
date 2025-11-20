@@ -7,11 +7,11 @@ CREATE TABLE `regime` (
   `name_fr` VARCHAR(100),
   `description_en` TEXT,
   `description_fr` TEXT,
-  `max_added_sugars_100g` INT,
+  `max_added-sugars_100g` INT,
   `max_sugars_100g` INT,
   `max_sucrose_100g` INT,
   `max_glucose_100g` INT,
-  `max_fructose_100g` INT,
+  `max_fructose_100g` INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `user` (
