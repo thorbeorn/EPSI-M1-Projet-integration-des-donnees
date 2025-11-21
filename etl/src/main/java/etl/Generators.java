@@ -23,30 +23,31 @@ public class Generators {
     });
 	
 	public static Row generateDailyMenu(Row regimePlan, Dataset<Row> dfAvailableProducts, String userCountry, String soldContriesColone) {
-        double maxAddedSugarsPerDay = regimePlan.getAs("max_added-sugars_g_day");
-        double maxSugarPerDay = regimePlan.getAs("max_sugars_g_day");
-        double maxSucrosePerDay = regimePlan.getAs("max_sucrose_g_day");
-        double maxGlucosePerDay = regimePlan.getAs("max_glucose_g_day");
-        double maxFructosePerDay = regimePlan.getAs("max_fructose_g_day");
+		double maxAddedSugarsPer100g = ((Number) regimePlan.getAs("max_added-sugars_100g")).doubleValue();
+		double maxSugarPer100g = ((Number) regimePlan.getAs("max_sugars_100g")).doubleValue();
+		double maxSucrosePer100g = ((Number) regimePlan.getAs("max_sucrose_100g")).doubleValue();
+		double maxGlucosePer100g = ((Number) regimePlan.getAs("max_glucose_100g")).doubleValue();
+		double maxFructosePer100g = ((Number) regimePlan.getAs("max_fructose_100g")).doubleValue();
+	    
+		Dataset<Row> dfFilteredProducts = dfAvailableProducts.filter(
+			dfAvailableProducts.col("added-sugars_100g").leq(100)
+                //.and(dfAvailableProducts.col("sugars_100g").leq(maxSugarPer100g))
+                //.and(dfAvailableProducts.col("sucrose_100g").leq(maxSucrosePer100g))
+                //.and(dfAvailableProducts.col("glucose_100g").leq(maxGlucosePer100g))
+                //.and(dfAvailableProducts.col("fructose_100g").leq(maxFructosePer100g))
+                //.and(dfAvailableProducts.col(soldContriesColone).contains(userCountry))
+		);
+	    
+	    Row breakfast = dfFilteredProducts.sample(false, 0.1).first();
+	    Row lunch = dfFilteredProducts.sample(false, 0.1).first();
+	    Row dinner = dfFilteredProducts.sample(false, 0.1).first();
 
-        Dataset<Row> dfFilteredProducts = dfAvailableProducts.filter(
-                dfAvailableProducts.col("max_added-sugars_100g").leq(maxAddedSugarsPerDay)
-                        .and(dfAvailableProducts.col("max_sugars_100g").leq(maxSugarPerDay))
-                        .and(dfAvailableProducts.col("max_sucrose_100g").leq(maxSucrosePerDay))
-                        .and(dfAvailableProducts.col("max_glucose_100g").leq(maxGlucosePerDay))
-                        .and(dfAvailableProducts.col("max_fructose_100g").leq(maxFructosePerDay)
-                        .and(dfAvailableProducts.col(soldContriesColone).contains(userCountry)))
-        );
-        Row breakfast = dfFilteredProducts.sample(false, 0.1).first();
-        Row lunch = dfFilteredProducts.sample(false, 0.1).first();
-        Row dinner = dfFilteredProducts.sample(false, 0.1).first();
+	    String breakfastProductName = breakfast.getAs("product_name");
+	    String lunchProductName = lunch.getAs("product_name");
+	    String dinnerProductName = dinner.getAs("product_name");
 
-        String breakfastProductName = breakfast.getAs("product_name");
-        String lunchProductName = lunch.getAs("product_name");
-        String dinnerProductName = dinner.getAs("product_name");
-
-        return RowFactory.create(breakfastProductName, lunchProductName, dinnerProductName);
-    }
+	    return RowFactory.create(breakfastProductName, lunchProductName, dinnerProductName);
+	}
 	
 	public static Dataset<Row> generateWeeklyMenu(SparkSession sparkSession, Dataset<Row> dfUsersCleaned, Dataset<Row> dfDietsCleaned, Dataset<Row> dfProductsCleaned) {
 		List<Row> menuRows = new ArrayList<>();
@@ -63,7 +64,6 @@ public class Generators {
                     .collectAsList();
 
             if (regimeList.isEmpty()) {
-                // handle missing regime
                 continue;
             }
 

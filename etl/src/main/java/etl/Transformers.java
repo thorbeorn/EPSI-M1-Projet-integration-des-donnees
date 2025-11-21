@@ -16,16 +16,14 @@ public class Transformers {
 
 	private static Dataset<Row> selectAndCastColumns(Dataset<Row> df) {
 	    return df.select(
-	                    df.col("product_name").cast("string"),
-	                    df.col("categories_en").cast("string"),
-	                    df.col("countries_en").cast("string"),
-	                    df.col("added-sugars_100g").cast("float"),
-	                    df.col("sugars_100g").cast("float"),
-	                    df.col("sucrose_100g").cast("float"),
-	                    df.col("glucose_100g").cast("float"),
-	                    df.col("fructose_100g").cast("float")
-	            ).withColumnRenamed("countries_en", "sold_countries")
-	            .withColumnRenamed("categories_en", "categories");
+                df.col("product_name").cast("string"),
+                df.col("categories_en").cast("string"),
+                df.col("countries_en").cast("string"),
+                df.col("proteins_100g").cast("float"),
+                df.col("carbohydrates_100g").cast("float"),
+                df.col("fat_100g").cast("float")
+        ).withColumnRenamed("countries_en", "sold_countries")
+        .withColumnRenamed("categories_en", "categories");
 	}
 	private static Dataset<Row> removeDuplicates(Dataset<Row> df) {
 	    return df.dropDuplicates();
@@ -46,7 +44,7 @@ public class Transformers {
 	
 	private static Dataset<Row> removeNonASCIICharacters(Dataset<Row> df, String columnName, String regex) {
         return df.filter(
-                df.col(columnName).rlike("^[\\x00-\\x7F]*$")
+                df.col(columnName).rlike(regex)
         );
     }
 	private static Dataset<Row> removeOutOfRangeValues(Dataset<Row> df, String columnName, float min, float max) {
@@ -129,11 +127,9 @@ public class Transformers {
 		dfProducts = removeMissingValues(dfProducts);
 		dfProducts = removeDuplicates(dfProducts);
 		
-		dfProducts = removeNegativeValues(dfProducts, "added-sugars_100g");
-		dfProducts = removeNegativeValues(dfProducts, "sugars_100g");
-		dfProducts = removeNegativeValues(dfProducts, "sucrose_100g");
-		dfProducts = removeNegativeValues(dfProducts, "glucose_100g");
-		dfProducts = removeNegativeValues(dfProducts, "fructose_100g");
+		dfProducts = removeNegativeValues(dfProducts, "proteins_100g");
+		dfProducts = removeNegativeValues(dfProducts, "carbohydrates_100g");
+		dfProducts = removeNegativeValues(dfProducts, "fat_100g");
 		
 		dfProducts = removeEmptyStrings(dfProducts, "product_name");
 		dfProducts = removeEmptyStrings(dfProducts, "categories");
@@ -143,47 +139,44 @@ public class Transformers {
 		dfProducts = removeNonASCIICharacters(dfProducts, "categories", "^[\\x00-\\x7F]*$");
 		dfProducts = removeNonASCIICharacters(dfProducts, "sold_countries", "^[\\x00-\\x7F]*$");
 		
-		dfProducts = removeOutOfRangeValues(dfProducts, "added-sugars_100g", 0, 100);
-		dfProducts = removeOutOfRangeValues(dfProducts, "sugars_100g", 0, 100);
-		dfProducts = removeOutOfRangeValues(dfProducts, "sucrose_100g", 0, 100);
-		dfProducts = removeOutOfRangeValues(dfProducts, "glucose_100g", 0, 100);
-		dfProducts = removeOutOfRangeValues(dfProducts, "fructose_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "proteins_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "carbohydrates_100g", 0, 100);
+		dfProducts = removeOutOfRangeValues(dfProducts, "fat_100g", 0, 100);
 		
 		dfProducts = cleanCountryNames(dfProducts, sparkSession);
 		return dfProducts;
 	}
-	public static Dataset<Row> cleanUserData(Dataset<Row> dfUsers, SparkSession sparkSession) {
-		dfUsers = removeMissingValues(dfUsers);
-		dfUsers = removeDuplicates(dfUsers);
-		
-		dfUsers = removeEmptyStrings(dfUsers, "first_name");
-		dfUsers = removeEmptyStrings(dfUsers, "last_name");
-		dfUsers = removeEmptyStrings(dfUsers, "country");
-		
-		dfUsers = removeNonASCIICharacters(dfUsers, "first_name", "^[\\x00-\\x7F]*$");
-		dfUsers = removeNonASCIICharacters(dfUsers, "last_name", "^[\\x00-\\x7F]*$");
-		dfUsers = removeNonASCIICharacters(dfUsers, "country", "^[\\x00-\\x7F]*$");
-		return dfUsers;
+	public static Dataset<Row> cleanUserData(Dataset<Row> dfUsers, Dataset<Row> dfDiets, SparkSession sparkSession) {
+	    dfUsers = removeEmptyStrings(dfUsers, "first_name");
+	    dfUsers = removeEmptyStrings(dfUsers, "last_name");
+	    dfUsers = removeEmptyStrings(dfUsers, "country");
+	    
+	    dfUsers = removeNonASCIICharacters(dfUsers, "first_name", "^[\\x00-\\x7F]*$");
+	    dfUsers = removeNonASCIICharacters(dfUsers, "last_name", "^[\\x00-\\x7F]*$");
+	    dfUsers = removeNonASCIICharacters(dfUsers, "country", "^[\\x00-\\x7F]*$");
+	    
+	    dfUsers = dfUsers.join(
+	        dfDiets.select("regime_id"),
+	        dfUsers.col("regime_id").equalTo(dfDiets.col("regime_id")),
+	        "inner"
+	    ).select(dfUsers.col("*"));
+	    
+	    return dfUsers;
 	}
 	public static Dataset<Row> cleanDietData(Dataset<Row> dfDiets, SparkSession sparkSession) {
-		dfDiets = removeMissingValues(dfDiets);
-		dfDiets = removeDuplicates(dfDiets);
-		
 		dfDiets = removeEmptyStrings(dfDiets, "name_en");
 		dfDiets = removeEmptyStrings(dfDiets, "name_fr");
 		dfDiets = removeEmptyStrings(dfDiets, "description_en");
 		dfDiets = removeEmptyStrings(dfDiets, "description_fr");
 		
-		dfDiets = removeNonASCIICharacters(dfDiets, "name_en", "^[\\x00-\\x7F]*$");
-		dfDiets = removeNonASCIICharacters(dfDiets, "name_fr", "^[\\x00-\\x7F]*$");
-		dfDiets = removeNonASCIICharacters(dfDiets, "description_en", "^[\\x00-\\x7F]*$");
-		dfDiets = removeNonASCIICharacters(dfDiets, "description_fr", "^[\\x00-\\x7F]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "name_en", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
+	    dfDiets = removeNonASCIICharacters(dfDiets, "name_fr", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "description_en", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "description_fr", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
 		
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_added-sugars_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_sugars_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_sucrose_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_glucose_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_fructose_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_proteins_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_carbohydrates_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_fat_100g", 0, 100);
 		return dfDiets;
 	}
 }

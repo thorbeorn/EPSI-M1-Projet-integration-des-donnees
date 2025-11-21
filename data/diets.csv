@@ -1,7 +1,6 @@
-regime_id,name_en,name_fr,description_en,description_fr,max_added-sugars_100g,max_sugars_100g,max_sucrose_100g,max_glucose_100g,max_fructose_100g
-1,Low Added Sugar,Faible sucre ajouté,Diet low in added sugars.,Régime faible en sucres ajoutés.,5,10,3,4,4
-2,Low Sugar,Faible sucre,Diet reducing all sugar types.,Régime réduisant tous les types de sucres.,10,20,8,7,7
-3,No Sucrose,Sans saccharose,Diet avoiding sucrose.,Régime évitant le saccharose.,15,15,0,10,10
-4,Low Glucose,Faible glucose,Diet low in glucose.,Régime faible en glucose.,20,25,10,5,12
-5,Low Fructose,Faible fructose,Diet low in fructose.,Régime faible en fructose.,18,22,9,8,3
-6,Balanced Sugars,Sucres équilibrés,Balanced diet with controlled sugars.,Régime équilibré avec sucres contrôlés.,25,30,12,10,10
+regime_id,name,description,max_proteins_g_day,max_fat_g_day,max_carbohydrates_g_day
+1,Mediterranean,Inspired by Mediterranean cuisine,80.00,60.00,100.00
+2,Keto,A ketogenic diet,100.00,80.00,20.00
+3,Paleo,A diet based on foods presumed to have been consumed by early humans,90.00,50.00,80.00
+4,Low carb,A low carbohydrate diet,120.00,70.00,50.00
+5,Vegetarian,Excludes meat and fish rich in plant-based foods and proteins,80.00,60.00,200.00

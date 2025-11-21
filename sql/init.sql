@@ -22,8 +22,7 @@ CREATE TABLE `user` (
   `gender` TEXT,
   `weight` DOUBLE,
   `country` TEXT,
-  `regime_id` INT,
-  FOREIGN KEY (regime_id) REFERENCES regime(regime_id)
+  `regime_id` INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE `daily_menu` (
@@ -32,6 +31,5 @@ CREATE TABLE `daily_menu` (
   `breakfast_product_name` TEXT NOT NULL,
   `lunch_product_name` TEXT NOT NULL,
   `dinner_product_name` TEXT NOT NULL,
-  PRIMARY KEY (user_id, day),
-  FOREIGN KEY (user_id) REFERENCES user(user_id)
+  PRIMARY KEY (`user_id`, `day`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
