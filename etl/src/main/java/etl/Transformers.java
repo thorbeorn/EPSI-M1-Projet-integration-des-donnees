@@ -164,19 +164,15 @@ public class Transformers {
 	    return dfUsers;
 	}
 	public static Dataset<Row> cleanDietData(Dataset<Row> dfDiets, SparkSession sparkSession) {
-		dfDiets = removeEmptyStrings(dfDiets, "name_en");
-		dfDiets = removeEmptyStrings(dfDiets, "name_fr");
-		dfDiets = removeEmptyStrings(dfDiets, "description_en");
-		dfDiets = removeEmptyStrings(dfDiets, "description_fr");
+		dfDiets = removeEmptyStrings(dfDiets, "name");
+		dfDiets = removeEmptyStrings(dfDiets, "description");
 		
-		dfDiets = removeNonASCIICharacters(dfDiets, "name_en", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
-	    dfDiets = removeNonASCIICharacters(dfDiets, "name_fr", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
-		dfDiets = removeNonASCIICharacters(dfDiets, "description_en", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
-		dfDiets = removeNonASCIICharacters(dfDiets, "description_fr", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "name", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
+		dfDiets = removeNonASCIICharacters(dfDiets, "description", "^[\\x00-\\x7F\\u00C0-\\u00FF]*$");
 		
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_proteins_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_carbohydrates_100g", 0, 100);
-		dfDiets = removeOutOfRangeValues(dfDiets, "max_fat_100g", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_proteins_g_day", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_carbohydrates_g_day", 0, 100);
+		dfDiets = removeOutOfRangeValues(dfDiets, "max_fat_g_day", 0, 100);
 		return dfDiets;
 	}
 }

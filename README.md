@@ -35,7 +35,7 @@ git clone https://github.com/thorbeorn/EPSI-M1-Projet-integration-des-donnees.gi
 
 2. **Ouvrir le projet dans un IDE (IntelliJ IDEA, Eclipse, etc.) :**
 ```bash
-cd openfoodfacts-etl
+cd EPSI-M1-Projet-integration-des-donnees
 ```
 
 3. **Télécharger le CSV d'OpenFoodFacts et le placer dans le dossier** `data/` **avec les autres fichiers CSV. Vous pouvez télécharger le fichier CSV depuis ce lien :** [**OpenFoodFacts**](https://static.openfoodfacts.org/data/en.openfoodfacts.org.products.csv)
@@ -48,12 +48,13 @@ mv en.openfoodfacts.org.products.csv data/products.csv
 mvn install
 ```
 
-5. **Lancez le conteneur MySQL :**
+5. **Lancez les conteneur :**
 ```bash
+cd conf
 docker-compose up -d
 ```
 
-6. **Vérifiez que le conteneur MySQL est en cours d'exécution :**
+6. **Vérifiez que les conteneur sont en cours d'exécution :**
 ```bash
 docker ps
 ```
@@ -61,12 +62,13 @@ docker ps
 7. **Compiler le projet avant de l'exécuter :**
 
 ```bash
+cd ../etl
 mvn clean package
 ```
 
 8. **Exécutez la classe principale `Main.java` pour lancer le projet :**
 ```bash
-mv etl/target/*with*.jar etl.jar
+mv etl/target/*with*.jar etl/target/etl.jar
 ```
 
 ### - Single node
