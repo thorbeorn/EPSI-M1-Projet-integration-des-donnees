@@ -18,7 +18,7 @@ public class Main {
 	    Dataset<Row> dfDietsCleaned = Transformers.cleanDietData(dfDiets, sparkSession);
 	    Dataset<Row> dfUsersCleaned = Transformers.cleanUserData(dfUsers, dfDietsCleaned, sparkSession);
 	    
-	    //Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
+	    Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
 	    
 	    //Loaders.loadToDatabase(dfDietsCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "regime");
 	    //Loaders.loadToDatabase(dfUsersCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "user");

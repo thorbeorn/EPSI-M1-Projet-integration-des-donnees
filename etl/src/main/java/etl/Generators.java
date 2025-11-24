@@ -23,19 +23,21 @@ public class Generators {
     });
 	
 	public static Row generateDailyMenu(Row regimePlan, Dataset<Row> dfAvailableProducts, String userCountry, String soldContriesColone) {
-		double maxAddedSugarsPer100g = ((Number) regimePlan.getAs("max_added-sugars_100g")).doubleValue();
-		double maxSugarPer100g = ((Number) regimePlan.getAs("max_sugars_100g")).doubleValue();
-		double maxSucrosePer100g = ((Number) regimePlan.getAs("max_sucrose_100g")).doubleValue();
-		double maxGlucosePer100g = ((Number) regimePlan.getAs("max_glucose_100g")).doubleValue();
-		double maxFructosePer100g = ((Number) regimePlan.getAs("max_fructose_100g")).doubleValue();
+		double maxProtein = ((Number) regimePlan.getAs("max_proteins_g_day")).doubleValue();
+		double maxFat = ((Number) regimePlan.getAs("max_fat_g_day")).doubleValue();
+		double maxCarbohydrates = ((Number) regimePlan.getAs("max_carbohydrates_g_day")).doubleValue();
 	    
+		System.out.println("===================================");
+		System.out.println(maxProtein);
+		System.out.println(maxFat);
+		System.out.println(maxCarbohydrates);
+		dfAvailableProducts.show(20, false);
+		
 		Dataset<Row> dfFilteredProducts = dfAvailableProducts.filter(
-			dfAvailableProducts.col("added-sugars_100g").leq(100)
-                //.and(dfAvailableProducts.col("sugars_100g").leq(maxSugarPer100g))
-                //.and(dfAvailableProducts.col("sucrose_100g").leq(maxSucrosePer100g))
-                //.and(dfAvailableProducts.col("glucose_100g").leq(maxGlucosePer100g))
-                //.and(dfAvailableProducts.col("fructose_100g").leq(maxFructosePer100g))
-                //.and(dfAvailableProducts.col(soldContriesColone).contains(userCountry))
+			dfAvailableProducts.col("proteins_100g").leq(maxProtein)
+                .and(dfAvailableProducts.col("fat_100g").leq(maxFat))
+                .and(dfAvailableProducts.col("carbohydrates_100g").leq(maxCarbohydrates))
+                .and(dfAvailableProducts.col(soldContriesColone).contains(userCountry))
 		);
 	    
 	    Row breakfast = dfFilteredProducts.sample(false, 0.1).first();
