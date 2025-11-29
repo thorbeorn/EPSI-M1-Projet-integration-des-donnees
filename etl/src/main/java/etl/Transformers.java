@@ -66,59 +66,28 @@ public class Transformers {
 	    Dataset<Row> dfMergedData = listCountry.join(dfCountries, listCountry.col("country").equalTo(dfCountries.col("country_en")), "left_outer");
 	    Dataset<Row> dfFalseCountry = dfMergedData.filter(dfMergedData.col("country_en").isNull()).select("country");
 	    List<String> falseCountryList = dfFalseCountry.as(Encoders.STRING()).collectAsList();
-	    Map<String, String> countryMap = dfCountries.select("country_en", "country_fr")
-	        .as(Encoders.tuple(Encoders.STRING(), Encoders.STRING()))
-	        .collectAsList()
-	        .stream()
-	        .collect(Collectors.toMap(t -> t._1(), t -> t._2()));
-	    
+
 	    Dataset<Row> dfCleaned = dfSelectedColumns;
 	    dfCleaned = dfCleaned.withColumn(
-	    	    "sold_countries_en",
-	    	    expr(
-	    	        "concat_ws(',', " +
-	    	            "filter(split(sold_countries, ','), country -> " +
-	    	                "!array_contains(array('" +
-	    	                    String.join("','", falseCountryList.stream().map(Utils::escape).toList()) +
-	    	                "'), country)" +
-	    	            ")" +
-	    	        ")"
-	    	    )
-	    	);
+	        "sold_countries_en",
+	        expr(
+	            "concat_ws(',', " +
+	                "filter(split(sold_countries, ','), country -> " +
+	                    "!array_contains(array('" +
+	                        String.join("','", falseCountryList.stream().map(Utils::escape).toList()) +
+	                    "'), country)" +
+	                ")" +
+	            ")"
+	        )
+	    );
 
-	    	// FR version
-	    	dfCleaned = dfCleaned.withColumn(
-	    	    "sold_countries_fr",
-	    	    expr(
-	    	        "concat_ws(',', transform(" +
-	    	            "filter(split(sold_countries, ','), country -> " +
-	    	                "!array_contains(array('" +
-	    	                    String.join("','", falseCountryList.stream().map(Utils::escape).toList()) +
-	    	                "'), country)" +
-	    	            "), country -> CASE " +
-	    	                countryMap.entrySet().stream()
-	    	                    .map(e ->
-	    	                        "WHEN country = '" +
-	    	                        Utils.escape(e.getKey()) +
-	    	                        "' THEN '" +
-	    	                        Utils.escape(e.getValue()) +
-	    	                        "'"
-	    	                    )
-	    	                    .collect(Collectors.joining(" ")) +
-	    	            " END))"
-	    	    )
-	    	);
 	    dfCleaned = dfCleaned.withColumn("sold_countries_en",
 	        when(dfCleaned.col("sold_countries_en").equalTo(""), null)
 	            .otherwise(dfCleaned.col("sold_countries_en")));
-	    
-	    dfCleaned = dfCleaned.withColumn("sold_countries_fr",
-	        when(dfCleaned.col("sold_countries_fr").equalTo(""), null)
-	            .otherwise(dfCleaned.col("sold_countries_fr")));
-	    
-	    dfCleaned = dfCleaned.na().drop(new String[]{"sold_countries_en", "sold_countries_fr"});
+
+	    dfCleaned = dfCleaned.na().drop(new String[]{"sold_countries_en"});
 	    dfCleaned = dfCleaned.drop("sold_countries");
-	    
+
 	    return dfCleaned;
 	}
 	

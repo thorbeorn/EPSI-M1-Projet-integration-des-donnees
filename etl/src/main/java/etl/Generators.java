@@ -33,22 +33,16 @@ public class Generators {
                 .and(dfAvailableProducts.col("carbohydrates_100g").leq(maxCarbohydrates))
                 .and(dfAvailableProducts.col(soldContriesColone).contains(userCountry))
 		);
+
+	    Row breakfast = dfFilteredProducts.sample(false, 0.1).first();
+	    Row lunch = dfFilteredProducts.sample(false, 0.1).first();
+	    Row dinner = dfFilteredProducts.sample(false, 0.1).first();
+
+	    String breakfastProductName = breakfast.getAs("product_name");
+	    String lunchProductName = lunch.getAs("product_name");
+	    String dinnerProductName = dinner.getAs("product_name");
 	    
-		
-		System.out.println("===============filtered===================");
-		System.out.println(dfFilteredProducts);
-		System.out.println("===================================");
-		
-	    //Row breakfast = dfFilteredProducts.sample(false, 0.1).first();
-	    //Row lunch = dfFilteredProducts.sample(false, 0.1).first();
-	    //Row dinner = dfFilteredProducts.sample(false, 0.1).first();
-
-	    //String breakfastProductName = breakfast.getAs("product_name");
-	    //String lunchProductName = lunch.getAs("product_name");
-	    //String dinnerProductName = dinner.getAs("product_name");
-
-	    //return RowFactory.create(breakfastProductName, lunchProductName, dinnerProductName);
-		return regimePlan;
+	    return RowFactory.create(breakfastProductName, lunchProductName, dinnerProductName);
 	}
 	
 	public static Dataset<Row> generateWeeklyMenu(SparkSession sparkSession, Dataset<Row> dfUsersCleaned, Dataset<Row> dfDietsCleaned, Dataset<Row> dfProductsCleaned) {
@@ -67,16 +61,15 @@ public class Generators {
 			if (regimeList.isEmpty()) { continue; }
 			Row rowUserRegimeInfo = regimeList.get(0);
 
-			for (int day = 1; day <= 7; day++) { 
-				Row dailyMenu = generateDailyMenu(rowUserRegimeInfo, dfProductsCleaned, userCountry, "sold_countries_fr"); 
-				//Row menuRow = RowFactory.create(userId, day, dailyMenu.getAs(0), dailyMenu.getAs(1), dailyMenu.getAs(2));
-				//menuRows.add(menuRow); 
+			//for (int day = 1; day <= 7; day++) { 
+			for (int day = 1; day <= 1; day++) { 
+				Row dailyMenu = generateDailyMenu(rowUserRegimeInfo, dfProductsCleaned, userCountry, "sold_countries_en");
+				Row menuRow = RowFactory.create(userId, day, dailyMenu.getAs(0), dailyMenu.getAs(1), dailyMenu.getAs(2));
+				menuRows.add(menuRow); 
 			}
 				 
 		  } 
-		  //return sparkSession.createDataFrame(menuRows,schemaWeeklyMenus);
-		 
-		  return dfProductsCleaned;
+		  return sparkSession.createDataFrame(menuRows,schemaWeeklyMenus);
 	}
 
 }

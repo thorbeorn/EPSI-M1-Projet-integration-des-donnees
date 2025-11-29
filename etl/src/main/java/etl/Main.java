@@ -20,6 +20,8 @@ public class Main {
 	    
 	    Dataset<Row> weeklyMenus = Generators.generateWeeklyMenu(sparkSession, dfUsersCleaned, dfDietsCleaned, dfProductsCleaned);
 	    
+	    weeklyMenus.show();
+	    
 	    //Loaders.loadToDatabase(dfDietsCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "regime");
 	    //Loaders.loadToDatabase(dfUsersCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "user");
 	    //Loaders.loadToDatabase(weeklyMenus, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "daily_menu");
