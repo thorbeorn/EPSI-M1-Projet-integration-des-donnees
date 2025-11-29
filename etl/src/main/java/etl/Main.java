@@ -22,9 +22,9 @@ public class Main {
 	    
 	    weeklyMenus.show();
 	    
-	    //Loaders.loadToDatabase(dfDietsCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "regime");
-	    //Loaders.loadToDatabase(dfUsersCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "user");
-	    //Loaders.loadToDatabase(weeklyMenus, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "daily_menu");
+	    Loaders.loadToDatabase(dfDietsCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "regime");
+	    Loaders.loadToDatabase(dfUsersCleaned, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "user");
+	    Loaders.loadToDatabase(weeklyMenus, Constants.DB_HOST, Constants.DB_USER, Constants.DB_PASSWORD, "daily_menu");
 	    
 	    sparkSession.stop();
 	}
