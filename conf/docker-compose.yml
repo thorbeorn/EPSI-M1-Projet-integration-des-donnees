@@ -1,6 +1,5 @@
 volumes:
   spark_events: {}
-  openfoodfacts-etl-mysql-data: {}
 
 services:
   spark-master:
@@ -80,7 +79,6 @@ services:
     image: "mysql:latest"
     restart: unless-stopped
     volumes:
-        - openfoodfacts-etl-mysql-data:/var/lib/mysql
         - ${PWD}/../sql/init.sql:/docker-entrypoint-initdb.d/init.sql
     environment:
         MYSQL_ALLOW_EMPTY_PASSWORD: "yes"

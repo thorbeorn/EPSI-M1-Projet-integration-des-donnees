@@ -1,8 +1,6 @@
 package etl;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 import org.apache.spark.sql.Dataset;
 import org.apache.spark.sql.Encoders;
