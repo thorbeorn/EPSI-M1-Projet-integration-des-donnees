@@ -120,15 +120,12 @@ CREATE TABLE IF NOT EXISTS `daily_menu` (
 ## 🏷️ TABLE `products_cleaned`
 
 ```sql
-CREATE TABLE products_cleaned (
-  `product_name` VARCHAR(255) NOT NULL,
-  `categories` VARCHAR(500),
-  `added_sugars_100g` FLOAT,
-  `sugars_100g` FLOAT,
-  `sucrose_100g` FLOAT,
-  `glucose_100g` FLOAT,
-  `fructose_100gv` FLOAT,
-  `sold_countries_en` VARCHAR(500),
-  `sold_countries_fr` VARCHAR(500)
+CREATE TABLE `regime` (
+  `regime_id` INT PRIMARY KEY,
+  `name` VARCHAR(100),
+  `description` TEXT,
+  `max_proteins_g_day` INT,
+  `max_fat_g_day` INT,
+  `max_carbohydrates_g_day` INT
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
